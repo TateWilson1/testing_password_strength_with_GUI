@@ -18,15 +18,15 @@ def check_password_strength(event=None):
     strength += digit_criteria
     strength += special_char_criteria
     
-    # Update slider and label based on strength
+    # Update slider based on strength
     strength_slider.set(strength)
     update_slider_color(strength)
 
     # Update feedback text
     if strength == 5:
-        result_label.config(text="Strong password!")
+        result_label.config(text="Strong password!", fg="green")
     elif 3 <= strength < 5:
-        result_label.config(text="Moderate password. Consider adding more variety.")
+        result_label.config(text="Moderate password. Consider adding more variety.", fg="orange")
     else:
         missing_criteria = []
         if not length_criteria:
@@ -39,7 +39,7 @@ def check_password_strength(event=None):
             missing_criteria.append("digits")
         if not special_char_criteria:
             missing_criteria.append("special characters")
-        result_label.config(text="Weak password. Consider adding: " + ", ".join(missing_criteria))
+        result_label.config(text="Weak password. Consider adding: " + ", ".join(missing_criteria), fg="red")
 
 # Function to update slider color based on strength
 def update_slider_color(strength):
@@ -58,6 +58,7 @@ def update_slider_color(strength):
 def clear_input():
     password_entry.delete(0, tk.END)
     strength_slider.set(0)
+    update_slider_color(0)  # Reset the slider color to red
     result_label.config(text="")
 
 # Function to toggle password visibility
@@ -72,33 +73,34 @@ def toggle_password():
 # Set up the main window
 root = tk.Tk()
 root.title("Password Strength Checker")
-root.geometry("300x300")
+root.geometry("350x300")
+root.configure(bg="#f0f0f0")  # Background color
+
+# Create a frame for better organization
+frame = tk.Frame(root, bg="#f0f0f0")
+frame.pack(pady=20)
 
 # Password entry field
-password_label = tk.Label(root, text="Enter Password:")
+password_label = tk.Label(frame, text="Enter Password:", bg="#f0f0f0", font=("Arial", 12))
 password_label.pack(pady=5)
-password_entry = tk.Entry(root, show="*")
+password_entry = tk.Entry(frame, show="*", font=("Arial", 12), width=30)
 password_entry.pack(pady=5)
 password_entry.bind("<KeyRelease>", check_password_strength)  # Update strength on key release
 
-# Button to check password strength
-check_button = tk.Button(root, text="Check Strength", command=check_password_strength)
-check_button.pack(pady=5)
-
 # Button to clear input
-clear_button = tk.Button(root, text="Clear", command=clear_input)
+clear_button = tk.Button(frame, text="Clear", command=clear_input, bg="#f44336", fg="white", font=("Arial", 10), width=15)
 clear_button.pack(pady=5)
 
 # Toggle password visibility button
-toggle_button = tk.Button(root, text="Show Password", command=toggle_password)
+toggle_button = tk.Button(frame, text="Show Password", command=toggle_password, bg="#2196F3", fg="white", font=("Arial", 10), width=15)
 toggle_button.pack(pady=5)
 
 # Slider to show strength score
-strength_slider = tk.Scale(root, from_=1, to=5, orient="horizontal", length=200, state="active")
+strength_slider = tk.Scale(frame, from_=1, to=5, orient="horizontal", length=200, state="active", bg="#f0f0f0", sliderrelief="raised")
 strength_slider.pack(pady=10)
 
 # Result label
-result_label = tk.Label(root, text="")
+result_label = tk.Label(frame, text="", bg="#f0f0f0", font=("Arial", 10))
 result_label.pack(pady=5)
 
 # Start the GUI loop
